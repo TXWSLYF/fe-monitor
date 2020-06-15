@@ -17,7 +17,11 @@ const tools = {
   /**
    * @description 发送ajax请求
    */
-  ajax(url: string, params: any, successFun: (data: any) => void, errorFun: (data: any) => void) {
+  ajax(
+    url: string,
+    params: any,
+    { success, fail }: { success?: (data: any) => void; fail?: (data: any) => void }
+  ) {
     const xhr = new XMLHttpRequest()
     const { readXHRbody } = this
     if (Array.isArray(params) && params.length === 1) {
@@ -29,22 +33,18 @@ const tools = {
 
     xhr.onreadystatechange = () => {
       if (xhr.readyState === 4 && xhr.status === 200) {
-        successFun && successFun(readXHRbody(xhr))
+        success && success(readXHRbody(xhr))
       }
     }
     xhr.onerror = () => {
-      if (errorFun) {
-        errorFun(readXHRbody(xhr))
-      }
+      fail && fail(readXHRbody(xhr))
     }
     xhr.setRequestHeader('Content-type', 'application/json')
 
     try {
       xhr.send(params)
     } catch (e) {
-      if (errorFun) {
-        errorFun(readXHRbody(xhr))
-      }
+      fail && fail(readXHRbody(xhr))
     }
   }
 }

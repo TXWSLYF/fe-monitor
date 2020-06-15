@@ -1,9 +1,9 @@
 import tools from './tool'
 import feMonitorConfig from './config'
 
-class SubmitPool {
+export class SubmitPool {
   // 提交数据池
-  dataPool = []
+  dataPool: Array<{ [key: string]: any }> = []
   // 初始提交时间间隔
   interval = 2000
   // 提交时间增长间隔
@@ -26,15 +26,12 @@ class SubmitPool {
 
         if (dataPool.length > 0) {
           const submitDatas = dataPool.splice(0, limit)
-          tools.ajax(
-            feMonitorConfig.requestUrl,
-            submitDatas,
-            () => {},
-            () => {
+          tools.ajax(feMonitorConfig.requestUrl, submitDatas, {
+            fail: () => {
               // 提交失败，重新推入队列
               dataPool.push(...submitDatas)
             }
-          )
+          })
         } else {
           interval += step
         }
@@ -44,6 +41,10 @@ class SubmitPool {
     }
 
     submitData()
+  }
+
+  push(data: { [key: string]: any }) {
+    this.dataPool.push(data)
   }
 }
 
