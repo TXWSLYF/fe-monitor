@@ -9,3 +9,5 @@ export default class FeMonitor {
     submitPool.start()
   }
 }
+
+new FeMonitor({ key: '' })

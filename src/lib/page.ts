@@ -5,8 +5,12 @@ class Page extends Collector {
     const { performance } = window
     if (!performance) return
 
+    const onload = window.onload
+
     window.onload = (event: Event) => {
-      typeof window.onload === 'function' && window.onload(event)
+      if (onload && typeof onload === 'function') {
+        onload.call(window, event)
+      }
 
       const {
         domainLookupStart,
